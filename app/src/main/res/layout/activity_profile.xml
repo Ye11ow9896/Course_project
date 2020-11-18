@@ -6,4 +6,54 @@
     android:layout_height="match_parent"
     tools:context=".ProfileActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/HelloText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:text="Привет!" />
+
+        <EditText
+            android:id="@+id/NumberCarText"
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Поле отображения номера тачки" />
+
+        <EditText
+            android:id="@+id/OdoValueText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Пробег автомобиля" />
+
+        <Button
+            android:id="@+id/BtnStart"
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Старт" />
+
+        <Button
+            android:id="@+id/BtnStop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Стоп" />
+
+        <Button
+            android:id="@+id/BtnAlert"
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

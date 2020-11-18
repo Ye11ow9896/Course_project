@@ -20,10 +20,11 @@ public class CreateProfile extends Activity implements OnClickListener {
      * carModel - Марка и модель ТС
      * numberOfCar - гос номер автомобиля
      * odoValue - показание одометра одометра*/
+
     final String LOG_TAG = "myLogs";
 
     Button btnCreate, btnBack;
-    EditText etCarModel, etUserName;
+    EditText etCarModel, etUserName, etCarNumber, etOdoValue;
 
     DBHelper dbHelper;
 
@@ -44,6 +45,8 @@ public class CreateProfile extends Activity implements OnClickListener {
 
         etCarModel = (EditText) findViewById(R.id.CarModel);
         etUserName = (EditText) findViewById(R.id.UserName);
+        etOdoValue = (EditText) findViewById(R.id.OdoValue);
+        etCarNumber = (EditText) findViewById(R.id.NumberOfCar);
 
         // создаем объект для создания и управления версиями БД
         dbHelper = new DBHelper(this);
@@ -59,6 +62,8 @@ public class CreateProfile extends Activity implements OnClickListener {
         // получаем данные из полей ввода
         String userName = etUserName.getText().toString();
         String carModel = etCarModel.getText().toString();
+        Integer odoValue  = new Integer(etOdoValue .getText().toString());
+        String carNumber = etCarNumber.getText().toString();
 
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -67,10 +72,13 @@ public class CreateProfile extends Activity implements OnClickListener {
         switch (v.getId()) {
             case R.id.BtnCreate:
                 Log.d(LOG_TAG, "--- Insert in mytable: ---");
-                // подготовим данные для вставки в виде пар: наименование столбца - значение
 
+                // подготовим данные для вставки в виде пар: наименование столбца - значение
                 cv.put("userName", userName);
                 cv.put("carModel", carModel);
+                cv.put("odoValue", odoValue);
+                cv.put("carNumber", carNumber);
+
                 // вставляем запись и получаем ее ID
                 long rowID = db.insert("mytable", null, cv);
                 Log.d(LOG_TAG, "row inserted, ID = " + rowID);
@@ -87,13 +95,17 @@ public class CreateProfile extends Activity implements OnClickListener {
                     int idColIndex = c.getColumnIndex("id");
                     int userNameColIndex = c.getColumnIndex("userName");
                     int carModelColIndex = c.getColumnIndex("carModel");
+                    int carNumberColIndex = c.getColumnIndex("carNumber");
+                    int odoValueColIndex = c.getColumnIndex("odoValue");
 
                     do {
                         // получаем значения по номерам столбцов и пишем все в лог
                         Log.d(LOG_TAG,
                                 "ID = " + c.getInt(idColIndex) +
                                         ", userName = " + c.getString(userNameColIndex) +
-                                        ", carModel = " + c.getString(carModelColIndex));
+                                        ", carModel = " + c.getString(carModelColIndex)+
+                                        ", odoValue = " + c.getString(odoValueColIndex) +
+                                        ", carNumberColIndex = " + c.getString(carNumberColIndex));
                         // переход на следующую строку
                         // а если следующей нет (текущая - последняя), то false - выходим из цикла
                     } while (c.moveToNext());
@@ -108,29 +120,5 @@ public class CreateProfile extends Activity implements OnClickListener {
         }
         // закрываем подключение к БД
         dbHelper.close();
-    }
-
-
-    class DBHelper extends SQLiteOpenHelper {
-
-        public DBHelper(Context context) {
-            // конструктор суперкласса
-            super(context, "myDB", null, 1);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            Log.d(LOG_TAG, "--- onCreate database ---");
-            // создаем таблицу с полями
-            db.execSQL("create table mytable ("
-                    + "id integer primary key autoincrement,"
-                    + "name text,"
-                    + "email text" + ");");
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        }
     }
 }

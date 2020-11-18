@@ -8,10 +8,10 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
+        android:layout_width="360dp"
+        android:layout_height="741dp"
         android:background="@color/cardview_shadow_end_color"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,19 +21,19 @@
             android:id="@+id/editTextTextPersonName"
             android:layout_width="220dp"
             android:layout_height="60dp"
-            android:layout_marginStart="75dp"
+            android:layout_marginStart="70dp"
             android:layout_marginTop="200dp"
-            android:layout_marginEnd="76dp"
+            android:layout_marginEnd="70dp"
             android:ems="10"
-            android:hint="номер авто"/>
+            android:hint="номер авто" />
 
         <EditText
             android:id="@+id/editTextTextPassword"
             android:layout_width="220dp"
             android:layout_height="60dp"
+            android:layout_marginStart="70dp"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="75dp"
-            android:layout_marginEnd="75dp"
+            android:layout_marginEnd="70dp"
             android:ems="10"
             android:hint="пароль" />
 
@@ -41,9 +41,9 @@
             android:id="@+id/BtnLoginProfile"
             android:layout_width="220dp"
             android:layout_height="60dp"
+            android:layout_marginStart="70dp"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="75dp"
-            android:layout_marginEnd="75dp"
+            android:layout_marginEnd="70dp"
             android:background="@color/cardview_light_background"
             android:text="Войти" />
 
@@ -51,9 +51,9 @@
             android:id="@+id/BtnCreateProfile"
             android:layout_width="220dp"
             android:layout_height="60dp"
+            android:layout_marginStart="70dp"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="75dp"
-            android:layout_marginBottom="75dp"
+            android:layout_marginBottom="70dp"
             android:background="@color/cardview_light_background"
             android:text="Регистрация" />
     </LinearLayout>
