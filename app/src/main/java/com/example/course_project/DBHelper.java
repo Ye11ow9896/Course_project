@@ -23,7 +23,8 @@ class DBHelper extends SQLiteOpenHelper {
                 + "carNumber text,"
                 + "odoValue INTEGER,"
                 + "userName text,"
-                + "carModel text"
+                + "carModel text,"
+                + "password text"
                 + ");");
     }
 

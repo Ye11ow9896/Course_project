@@ -38,7 +38,7 @@
             android:hint="пароль" />
 
         <Button
-            android:id="@+id/BtnLoginProfile"
+            android:id="@+id/btnLoginProfile"
             android:layout_width="220dp"
             android:layout_height="60dp"
             android:layout_marginStart="70dp"
@@ -48,7 +48,7 @@
             android:text="Войти" />
 
         <Button
-            android:id="@+id/BtnCreateProfile"
+            android:id="@+id/btnCreateProfile"
             android:layout_width="220dp"
             android:layout_height="60dp"
             android:layout_marginStart="70dp"

@@ -24,7 +24,7 @@ public class CreateProfile extends Activity implements OnClickListener {
     final String LOG_TAG = "myLogs";
 
     Button btnCreate, btnBack;
-    EditText etCarModel, etUserName, etCarNumber, etOdoValue;
+    EditText etCarModel, etUserName, etCarNumber, etOdoValue, etPassword;
 
     DBHelper dbHelper;
 
@@ -47,6 +47,7 @@ public class CreateProfile extends Activity implements OnClickListener {
         etUserName = (EditText) findViewById(R.id.UserName);
         etOdoValue = (EditText) findViewById(R.id.OdoValue);
         etCarNumber = (EditText) findViewById(R.id.NumberOfCar);
+        etPassword = (EditText) findViewById(R.id.Password);
 
         // создаем объект для создания и управления версиями БД
         dbHelper = new DBHelper(this);
@@ -64,7 +65,7 @@ public class CreateProfile extends Activity implements OnClickListener {
         String carModel = etCarModel.getText().toString();
         Integer odoValue  = new Integer(etOdoValue .getText().toString());
         String carNumber = etCarNumber.getText().toString();
-
+        String password = etPassword.getText().toString();
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -78,6 +79,7 @@ public class CreateProfile extends Activity implements OnClickListener {
                 cv.put("carModel", carModel);
                 cv.put("odoValue", odoValue);
                 cv.put("carNumber", carNumber);
+                cv.put("password", password);
 
                 // вставляем запись и получаем ее ID
                 long rowID = db.insert("mytable", null, cv);
@@ -97,6 +99,7 @@ public class CreateProfile extends Activity implements OnClickListener {
                     int carModelColIndex = c.getColumnIndex("carModel");
                     int carNumberColIndex = c.getColumnIndex("carNumber");
                     int odoValueColIndex = c.getColumnIndex("odoValue");
+                    int passwordColIndex = c.getColumnIndex("password");
 
                     do {
                         // получаем значения по номерам столбцов и пишем все в лог
@@ -105,7 +108,8 @@ public class CreateProfile extends Activity implements OnClickListener {
                                         ", userName = " + c.getString(userNameColIndex) +
                                         ", carModel = " + c.getString(carModelColIndex)+
                                         ", odoValue = " + c.getString(odoValueColIndex) +
-                                        ", carNumberColIndex = " + c.getString(carNumberColIndex));
+                                        ", carNumber = " + c.getString(carNumberColIndex) +
+                                        ", password = " + c.getString(passwordColIndex));
                         // переход на следующую строку
                         // а если следующей нет (текущая - последняя), то false - выходим из цикла
                     } while (c.moveToNext());
