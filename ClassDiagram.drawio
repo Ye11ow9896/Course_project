@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2020-11-21T14:45:50.777Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36" etag="CxRI6zwxr1EMGcCOJe0A" version="13.10.0" type="github">
+<mxfile host="app.diagrams.net" modified="2020-11-21T14:50:10.182Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36" etag="j_PNka44JSkOpMt0FcTn" version="13.10.0" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="2997" dy="2374" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -82,7 +82,7 @@
         <mxCell id="gEvGJwE6Dd_fPejVoH91-11" value="Активити создания нового профиля содержит поля для заполнения (Имя, модель авто, гос.номер, пробег), содержит 2 кнопки (&quot;создать&quot; и &quot;назад&quot;).&amp;nbsp;" style="shape=note2;boundedLbl=1;whiteSpace=wrap;html=1;size=25;verticalAlign=top;align=center;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="-510" y="180" width="127.5" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="gEvGJwE6Dd_fPejVoH91-12" value="" style="endArrow=none;dashed=1;html=1;entryX=0.458;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.402;exitY=1.001;exitDx=0;exitDy=0;exitPerimeter=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" target="gEvGJwE6Dd_fPejVoH91-11" edge="1" source="MWLD1dHodhY7ivmaf8xJ-18">
+        <mxCell id="gEvGJwE6Dd_fPejVoH91-12" value="" style="endArrow=none;dashed=1;html=1;entryX=0.458;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" target="gEvGJwE6Dd_fPejVoH91-11" edge="1" source="MWLD1dHodhY7ivmaf8xJ-16">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="620" y="520" as="sourcePoint" />
             <mxPoint x="568.8" y="133.32000000000005" as="targetPoint" />
@@ -306,6 +306,26 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="80" y="483" as="sourcePoint" />
             <mxPoint x="37.5" y="467.8000000000002" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wjXd9ibWL331jb071DOq-67" value="Отображает данные об автомобиле пользователя, с возможностью редактирования. Отображает предстоящие и предшествующие ТО( в зависимости от пробега_)" style="shape=note2;boundedLbl=1;whiteSpace=wrap;html=1;size=25;verticalAlign=top;align=center;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="683.25" y="850" width="127.5" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="wjXd9ibWL331jb071DOq-68" value="" style="endArrow=none;dashed=1;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="wjXd9ibWL331jb071DOq-67" target="wjXd9ibWL331jb071DOq-21">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="386" as="sourcePoint" />
+            <mxPoint x="520" y="450" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wjXd9ibWL331jb071DOq-69" value="Счетчик показаний одометра ( GPS).&amp;nbsp;" style="shape=note2;boundedLbl=1;whiteSpace=wrap;html=1;size=25;verticalAlign=top;align=center;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="-10" y="850" width="127.5" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="wjXd9ibWL331jb071DOq-70" value="" style="endArrow=none;dashed=1;html=1;exitX=0;exitY=0;exitDx=115;exitDy=12.5;exitPerimeter=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="wjXd9ibWL331jb071DOq-69" target="wjXd9ibWL331jb071DOq-11">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="693.25" y="881.7913385826773" as="sourcePoint" />
+            <mxPoint x="630" y="829" as="targetPoint" />
             <Array as="points" />
           </mxGeometry>
         </mxCell>
