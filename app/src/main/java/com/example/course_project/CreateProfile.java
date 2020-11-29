@@ -63,7 +63,7 @@ public class CreateProfile extends Activity implements OnClickListener {
         // получаем данные из полей ввода
         String userName = etUserName.getText().toString();
         String carModel = etCarModel.getText().toString();
-        Integer odoValue  = new Integer(etOdoValue .getText().toString());
+        Integer odoValue  = new Integer(etOdoValue.getText().toString());
         String carNumber = etCarNumber.getText().toString();
         String password = etPassword.getText().toString();
         // подключаемся к БД
@@ -92,7 +92,6 @@ public class CreateProfile extends Activity implements OnClickListener {
                 // ставим позицию курсора на первую строку выборки
                 // если в выборке нет строк, вернется false
                 if (c.moveToFirst()) {
-
                     // определяем номера столбцов по имени в выборке
                     int idColIndex = c.getColumnIndex("id");
                     int userNameColIndex = c.getColumnIndex("userName");
@@ -110,6 +109,10 @@ public class CreateProfile extends Activity implements OnClickListener {
                                         ", odoValue = " + c.getString(odoValueColIndex) +
                                         ", carNumber = " + c.getString(carNumberColIndex) +
                                         ", password = " + c.getString(passwordColIndex));
+
+                        Intent intent1 = new Intent(CreateProfile.this, ProfileActivity.class);
+                        intent1.putExtra("row", c.getString(idColIndex));//Передача данных id из базы в др активити
+                        startActivity(intent1);//переход в активити
                         // переход на следующую строку
                         // а если следующей нет (текущая - последняя), то false - выходим из цикла
                     } while (c.moveToNext());
