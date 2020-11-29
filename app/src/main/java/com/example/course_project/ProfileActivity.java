@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 public class ProfileActivity extends Activity implements OnClickListener {
 
+    final String LOG_TAG = "myLogs";
+        /*Используемые переменные*/
     Button start, stop, alarm;
     TextView carNumber, odoValue;
     DBHelper dbHelper;
@@ -24,6 +26,7 @@ public class ProfileActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        /*Привязка переменных к полям XML по ID*/
         carNumber = (TextView) findViewById(R.id.NumberCarText);
         odoValue = (TextView) findViewById(R.id.OdoValueText);
 
@@ -31,45 +34,47 @@ public class ProfileActivity extends Activity implements OnClickListener {
         stop = (Button) findViewById(R.id.BtnStop);
         alarm = (Button) findViewById(R.id.BtnAlert);
 
-        DataView();
+        dataView();//функция отображения данных в активити
     }
-
+        /*события по нажалию кнопок*/
     @Override
     public void onClick(View v) {
+        /*конструкция свитч по ID кнопки*/
+        switch(v.getId()) {      //получаем ID кнопки
 
-        switch(v.getId()) {
-            case R.id.BtnStart :
+            case R.id.BtnStart : //Нажатие старт - запуск счетчика километража
                 break;
-            case R.id.BtnStop :
+
+            case R.id.BtnStop : //Нажатие стоп - останов счетчика
                 break;
-            case R.id.BtnAlert :
+
+            case R.id.BtnAlert : //Нажатие алерт - вывод бортового журнала
                 break;
         }
     }
 
-    //Функция отображения данных
-    void DataView() {
-        dbHelper = new DBHelper(this);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor c = db.query("mytable", null, null, null, null, null, null);
+    //Функция отображения данных авторизованного пользователя
+    void dataView() {
+        dbHelper = new DBHelper(this);                  //создаем объект класса DBHelper
+        SQLiteDatabase db = dbHelper.getWritableDatabase();     //Метод getWritable... создает БД или, если она создана, то предоставляет доступ на запись/чтение
+        Cursor c = db.query("mytable", null, null, null, null, null, null); //создаем таблицу в БД
 
-        if (c.moveToFirst()) {
+        /*задаем интовые переменные, которые соответствуют номеру колонок*/
+        int carNumberColIndex = c.getColumnIndex("carNumber");
+        int odoValueColIndex = c.getColumnIndex("odoValue");
+        /*получаем значение id строки из мэйн активити*/
+        Intent intent1 = getIntent();
+        String row = intent1.getStringExtra("row");
+        Integer rowValue  = new Integer(row) - 1;//преобразуем string id в int и вычитаем 1 для получения номера строки в таблице БД
 
-            // определяем номера столбцов по имени в выборке
-            int idColIndex = c.getColumnIndex("id");
-            int userNameColIndex = c.getColumnIndex("userName");
-            int carModelColIndex = c.getColumnIndex("carModel");
-            int carNumberColIndex = c.getColumnIndex("carNumber");
-            int odoValueColIndex = c.getColumnIndex("odoValue");
-            int passwordColIndex = c.getColumnIndex("password");
-            do {
-                // получаем значения по номерам столбцов и пишем все в лог
-                carNumber.setText(String.valueOf(c.getString(carNumberColIndex)));
-                odoValue.setText(String.valueOf(c.getString(odoValueColIndex)));
-                // переход на следующую строку
-                // а если следующей нет (текущая - последняя), то false - выходим из цикла
-            } while (c.moveToNext());
-        } else
-            c.close();
+        c.moveToPosition(rowValue);//устанавливаем курсор на нужную нам строку
+        Log.d(LOG_TAG, c.getString(carNumberColIndex));
+        Log.d(LOG_TAG, c.getString(odoValueColIndex));
+
+        //Выводим данные профиля в поля активити (Номер машины и значение одометра)
+        carNumber.setText(String.valueOf(c.getString(carNumberColIndex)));
+        odoValue.setText(String.valueOf(c.getString(odoValueColIndex)));
+
+            c.close();//закрываем курсор
     }
 }
