@@ -9,6 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
+        <activity android:name=".BoardJournalActivity">
+            <intent-filter>
+                <action android:name=".BoardJournalActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ProfileActivity">
             <intent-filter>
                 <action android:name=".ProfileActivity" />
