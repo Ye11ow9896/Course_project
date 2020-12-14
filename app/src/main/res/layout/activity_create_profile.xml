@@ -52,6 +52,14 @@
             android:hint="Марка авто" />
 
         <EditText
+            android:id="@+id/CarMark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Модель авто" />
+
+        <EditText
             android:id="@+id/NumberOfCar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
