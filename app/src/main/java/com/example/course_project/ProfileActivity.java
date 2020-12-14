@@ -16,7 +16,8 @@ import android.widget.TextView;
 public class ProfileActivity extends Activity implements OnClickListener {
 
     final String LOG_TAG = "myLogs";
-        /*Используемые переменные*/
+    /*Используемые переменные*/
+    int odoVal;
     Button start, stop, alarm;
     TextView carNumber, odoValue;
     DBHelper dbHelper;
@@ -31,24 +32,33 @@ public class ProfileActivity extends Activity implements OnClickListener {
         odoValue = (TextView) findViewById(R.id.OdoValueText);
 
         start = (Button) findViewById(R.id.BtnStart);
+        start.setOnClickListener(this);
+
         stop = (Button) findViewById(R.id.BtnStop);
+        stop.setOnClickListener(this);
+
         alarm = (Button) findViewById(R.id.BtnAlert);
+        alarm.setOnClickListener(this);
 
         dataView();//функция отображения данных в активити
     }
-        /*события по нажалию кнопок*/
+
+    /*события по нажалию кнопок*/
     @Override
     public void onClick(View v) {
         /*конструкция свитч по ID кнопки*/
-        switch(v.getId()) {      //получаем ID кнопки
+        switch (v.getId()) {      //получаем ID кнопки
 
-            case R.id.BtnStart : //Нажатие старт - запуск счетчика километража
+            case R.id.BtnStart: //Нажатие старт - запуск счетчика километража
                 break;
 
-            case R.id.BtnStop : //Нажатие стоп - останов счетчика
+            case R.id.BtnStop: //Нажатие стоп - останов счетчика
                 break;
 
-            case R.id.BtnAlert : //Нажатие алерт - вывод бортового журнала
+            case R.id.BtnAlert: //Нажатие алерт - вывод бортового журнала
+                Intent intentBoardJournal = new Intent(ProfileActivity.this, BoardJournalActivity.class);
+                intentBoardJournal.putExtra("odoValue", odoVal);
+                startActivity(intentBoardJournal);
                 break;
         }
     }
@@ -65,7 +75,7 @@ public class ProfileActivity extends Activity implements OnClickListener {
         /*получаем значение id строки из мэйн активити*/
         Intent intent1 = getIntent();
         String row = intent1.getStringExtra("row");
-        Integer rowValue  = new Integer(row) - 1;//преобразуем string id в int и вычитаем 1 для получения номера строки в таблице БД
+        Integer rowValue = new Integer(row) - 1;//преобразуем string id в int и вычитаем 1 для получения номера строки в таблице БД
 
         c.moveToPosition(rowValue);//устанавливаем курсор на нужную нам строку
         Log.d(LOG_TAG, c.getString(carNumberColIndex));
@@ -74,7 +84,7 @@ public class ProfileActivity extends Activity implements OnClickListener {
         //Выводим данные профиля в поля активити (Номер машины и значение одометра)
         carNumber.setText(String.valueOf(c.getString(carNumberColIndex)));
         odoValue.setText(String.valueOf(c.getString(odoValueColIndex)));
-
-            c.close();//закрываем курсор
+        odoVal = c.getInt(odoValueColIndex);
+        c.close();//закрываем курсор
     }
 }
