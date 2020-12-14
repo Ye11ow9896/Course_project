@@ -35,7 +35,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="70dp"
             android:ems="10"
-            android:hint="пароль" />
+            android:hint="пароль"
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/btnLoginProfile"
