@@ -1,6 +1,7 @@
 package com.example.course_project;
 
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,12 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener {
 
-    final String LOG_TAG = "myLogs";
-    MainAlertDialog mainAlertDialog = new MainAlertDialog();//объект всплывающего окна ошибки ввода данных при авторизации
+    private WorkWithDB workWithDBMain;
     /*Переменные класса*/
-    DBHelper dbHelper;
     private Button BtnLoginProfile, BtnCreateProfile;
     private EditText textName, textPassword;
+    final String LOG_TAG = "myLogs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +29,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
         /*привязка к кнопкам и полям для заполнения по ID*/
         BtnLoginProfile = (Button) findViewById(R.id.btnLoginProfile);
-        BtnLoginProfile.setOnClickListener(this);//возвращает обратку при нажатии
+        BtnLoginProfile.setOnClickListener(this);
 
         BtnCreateProfile = (Button) findViewById(R.id.btnCreateProfile);
-        BtnCreateProfile.setOnClickListener(this);//возвращает обратку при нажатии
+        BtnCreateProfile.setOnClickListener(this);
 
         textName = (EditText) findViewById(R.id.editTextTextPersonName);
         textPassword = (EditText) findViewById(R.id.editTextTextPassword);
 
-
-        dbHelper = new DBHelper(this);//создаем объекс класса
-
+        workWithDBMain = new WorkWithDB(this);
     }
 
     @Override
@@ -55,42 +53,52 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             //По нажатию кнопки переходим в активити профиля
             case R.id.btnLoginProfile:
                 boolean checkEndTable = false;//переменная проверки конца списка. Если тру, то данные нашлись в таблице, если нет, то остается фолс
-                SQLiteDatabase db = dbHelper.getWritableDatabase(); //Метод getWritable... создает БД или, если она создана, то предоставляет доступ на запись/чтение
-                Cursor c = db.query("mytable", null, null, null, null, null, null);//создаем таблицу в БД
                 /*переменные для сравнения при поиске данных пароля и номера авто при авторизации*/
                 String name = textName.getText().toString();
                 String pass = textPassword.getText().toString();
+                /*инициализируем курсор*/
+                Cursor cur = workWithDBMain.getAccessToDB().query("mytable", null, null, null, null, null, null);//создаем таблицу в БД
+
                 /*задаем интовые переменные, которые соответствуют номеру колонок*/
-                int carNumberColIndex = c.getColumnIndex("carNumber");
-                int passwordColIndex = c.getColumnIndex("password");
-                int idColIndex = c.getColumnIndex("id");
+                int odoValueColIndex = cur.getColumnIndex("odoValue");
+                int carNumberColIndex = cur.getColumnIndex("carNumber");
+                int passwordColIndex = cur.getColumnIndex("password");
+                int idColIndex = cur.getColumnIndex("id");
                 /*Авторизация*/
-                if (c != null) {//курсор не нулл
-                    if (c.moveToFirst()) {//если таблица не пустая - двигаем курсор на первую строку таблицы
+
+                if ( cur!= null) {//курсор не нулл
+                    if (cur.moveToFirst()) {//если таблица не пустая - двигаем курсор на первую строку таблицы
 
                         do
                         {//проверяем есть ли введенные данные в нашей БД и прогоняем по все базе, пока не найдем совпадения
-                            Log.d(LOG_TAG, c.getString(carNumberColIndex));
-                            Log.d(LOG_TAG, c.getString(passwordColIndex));
+                            Log.d(LOG_TAG, cur.getString(carNumberColIndex));
+                            Log.d(LOG_TAG, cur.getString(passwordColIndex));
                             //если пароль и номер авто совпадают с данными из БД то переходим в активити профиля
-                            if (name.equals(c.getString(carNumberColIndex)) && pass.equals(c.getString(passwordColIndex))) {
+                            if (name.equals(cur.getString(carNumberColIndex)) &&
+                                    pass.equals(cur.getString(passwordColIndex))) {
                                 checkEndTable = true;//когда нашлись данные.
+                                workWithDBMain.setValueIdMytable(cur.getInt(idColIndex));//передаем значение айди в переменную класса дбхелпер
+                                workWithDBMain.setOdoValue((cur.getInt(odoValueColIndex)));
+                                /*переход в др активити*/
                                 Intent intent1 = new Intent(MainActivity.this, ProfileActivity.class);
-                                intent1.putExtra("row", c.getString(idColIndex));//Передача данных id из базы в др активити
                                 startActivity(intent1);//переход в активити
                                 break;
                             }
-
-                        } while (c.moveToNext());//конец таблица БД
+                        } while (cur.moveToNext());//конец таблица БД
                     }
-                    if (!(c.moveToNext() || checkEndTable)) { /*Если не нашлось имя, пароль и курсор равен нулю (не ноль), то: */
-                        mainAlertDialog.show(getSupportFragmentManager(), "custom");
+                    if (!(cur.moveToNext() || checkEndTable)) { /*Если не нашлось имя, пароль и курсор равен нулю (не ноль), то: */
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setTitle("ошибка")
+                                .setMessage("неверно введены данные")
+                                .create();
+                        AlertDialog alert = builder.create();
+                        alert.show();
                         checkEndTable = false;
                     }
-                    c.close();//закрытие курсора
+                    cur.close();//закрытие курсора
                 } else
                     Log.d(LOG_TAG, "Cursor is null");
-                dbHelper.close();//закрываем объект БД
+                cur.close();//закрываем объект БД
                 break;
         }
     }

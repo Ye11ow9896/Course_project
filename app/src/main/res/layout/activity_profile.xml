@@ -54,6 +54,12 @@
             android:layout_marginTop="50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Обслуживание" />
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="настройки профиля" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

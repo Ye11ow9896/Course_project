@@ -36,7 +36,7 @@ public class CreateProfile extends Activity implements OnClickListener {
     Button btnCreate, btnBack;
     EditText etCarModel, etUserName, etCarNumber, etOdoValue, etPassword,etCarMark;
 
-    DBHelper dbHelper;
+    WorkWithDB workWithDBCreateProf;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class CreateProfile extends Activity implements OnClickListener {
         etPassword = (EditText) findViewById(R.id.Password);
 
         // создаем объект для создания и управления версиями БД
-        dbHelper = new DBHelper(this);
+        workWithDBCreateProf = new WorkWithDB(this);
     }
 
 
@@ -67,8 +67,6 @@ public class CreateProfile extends Activity implements OnClickListener {
 
         // создаем объект для данных
         ContentValues cv = new ContentValues();
-        // подключаемся к БД
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
         // получаем данные из полей ввода
         String userName = etUserName.getText().toString();
         String carMark = etCarMark.getText().toString();
@@ -77,40 +75,43 @@ public class CreateProfile extends Activity implements OnClickListener {
         String carNumber = etCarNumber.getText().toString();
         String password = etPassword.getText().toString();
 
+        Cursor cur1 = workWithDBCreateProf.getAccessToDB().query("maintenance", null, null, null, null, null, null);//создаем таблицу в БД
+
         /*ищем марку и модель авто по БД в таблице мэинтенс*/
-        Cursor cur = db.query("maintenance", null, null, null, null, null, null);
-        if (cur.moveToFirst()) {
+        if (cur1.moveToFirst()) {
             // определяем номера столбцов по имени в выборке
-            int id_ColIndex = cur.getColumnIndex("id");
-            int autoColIndex = cur.getColumnIndex("auto");
-            int modelColIndex = cur.getColumnIndex("model");
-            int yearOfIssueColIndex = cur.getColumnIndex("yearOfIssue");
-            int brakePadChangeColIndex = cur.getColumnIndex("brakePadChange");
-            int brakeDiscChangeColIndex = cur.getColumnIndex("brakeDiscChange");
-            int motorOilChangeColIndex = cur.getColumnIndex("motorOilChange");
+            int id_ColIndex = cur1.getColumnIndex("id");
+            int autoColIndex = cur1.getColumnIndex("auto");
+            int modelColIndex = cur1.getColumnIndex("model");
+            int yearOfIssueColIndex = cur1.getColumnIndex("yearOfIssue");
+            int brakePadChangeColIndex = cur1.getColumnIndex("brakePadChange");
+            int brakeDiscChangeColIndex = cur1.getColumnIndex("brakeDiscChange");
+            int motorOilChangeColIndex = cur1.getColumnIndex("motorOilChange");
 
             do {
                 /*проверяем, есть ли такая модель и марка автомобиля в БД*/
-                if (carMark.equals(cur.getString(modelColIndex)) && carModel.equals(cur.getString(autoColIndex))) {
+                if (carMark.equals(cur1.getString(modelColIndex))
+                        && carModel.equals(cur1.getString(autoColIndex))) {
                     checkEndTable = true;//когда нашлись данные.
+                    workWithDBCreateProf.setValueIdMaintenance(cur1.getInt(id_ColIndex));//передаем значение айди таблици мэинтенс
                 }
                 // получаем значения по номерам столбцов и пишем все в лог
                 Log.d(LOG_TAG,
-                        "ID = " + cur.getInt(id_ColIndex) +
-                                ", auto = " + cur.getString(autoColIndex) +
-                                ", model = " + cur.getString(modelColIndex)+
-                                ", year = " + cur.getString(yearOfIssueColIndex)+
-                                ", brakePad = " + cur.getString(brakePadChangeColIndex) +
-                                ", brakeDisc = " + cur.getString(brakeDiscChangeColIndex) +
-                                ", motorOil= " + cur.getString(motorOilChangeColIndex));
+                        "ID = " + cur1.getInt(id_ColIndex) +
+                                ", auto = " + cur1.getString(autoColIndex) +
+                                ", model = " + cur1.getString(modelColIndex)+
+                                ", year = " + cur1.getString(yearOfIssueColIndex)+
+                                ", brakePad = " + cur1.getString(brakePadChangeColIndex) +
+                                ", brakeDisc = " + cur1.getString(brakeDiscChangeColIndex) +
+                                ", motorOil= " + cur1.getString(motorOilChangeColIndex));
 
 
                 // переход на следующую строку
                 // а если следующей нет (текущая - последняя), то false - выходим из цикла
-            } while (cur.moveToNext());
+            } while (cur1.moveToNext());
         } else
             Log.d(LOG_TAG, "0 rows");
-        if (!(cur.moveToNext() || checkEndTable)) { /*Если не нашлось имя, пароль и курсор равен нулю (не ноль), то: */
+        if (!(cur1.moveToNext() || checkEndTable)) { //*Если не нашлась авто из БД
             AlertDialog.Builder builder = new AlertDialog.Builder(CreateProfile.this);
             builder.setTitle("ошибка")
                     .setMessage("Авто нет в базе данных")
@@ -118,10 +119,7 @@ public class CreateProfile extends Activity implements OnClickListener {
             AlertDialog alert = builder.create();
             alert.show();
         }
-        cur.close();
-        //dbHelper.close();
-
-
+        cur1.close();
 
         if (checkEndTable) {
             switch (v.getId()) {
@@ -137,45 +135,44 @@ public class CreateProfile extends Activity implements OnClickListener {
                     cv.put("password", password);
 
                     // вставляем запись и получаем ее ID
-                    long rowID = db.insert("mytable", null, cv);
+                    long rowID = workWithDBCreateProf.getAccessToDB().insert("mytable", null, cv);
                     Log.d(LOG_TAG, "row inserted, ID = " + rowID);
-
                     Log.d(LOG_TAG, "--- Rows in mytable: ---");
-                    // делаем запрос всех данных из таблицы mytable, получаем Cursor
-                    Cursor c = db.query("mytable", null, null, null, null, null, null);
+
+                    Cursor cur = workWithDBCreateProf.getAccessToDB().query("maintenance", null, null, null, null, null, null);//создаем таблицу в БД
 
                     // ставим позицию курсора на первую строку выборки
                     // если в выборке нет строк, вернется false
-                    if (c.moveToFirst()) {
+                    if (cur.moveToFirst()) {
                         // определяем номера столбцов по имени в выборке
-                        int idColIndex = c.getColumnIndex("id");
-                        int userNameColIndex = c.getColumnIndex("userName");
-                        int carModelColIndex = c.getColumnIndex("carModel");
-                        int carMarkColIndex = c.getColumnIndex("carMark");
-                        int carNumberColIndex = c.getColumnIndex("carNumber");
-                        int odoValueColIndex = c.getColumnIndex("odoValue");
-                        int passwordColIndex = c.getColumnIndex("password");
+                        int idColIndex = cur.getColumnIndex("id");
+                        int userNameColIndex = cur.getColumnIndex("userName");
+                        int carModelColIndex = cur.getColumnIndex("carModel");
+                        int carMarkColIndex = cur.getColumnIndex("carMark");
+                        int carNumberColIndex = cur.getColumnIndex("carNumber");
+                        int odoValueColIndex = cur.getColumnIndex("odoValue");
+                        int passwordColIndex = cur.getColumnIndex("password");
 
                         do {
                             // получаем значения по номерам столбцов и пишем все в лог
                             Log.d(LOG_TAG,
-                                    "ID = " + c.getInt(idColIndex) +
-                                            ", userName = " + c.getString(userNameColIndex) +
-                                            ", carModel = " + c.getString(carModelColIndex) +
-                                            ", carMark = " + c.getString(carMarkColIndex) +
-                                            ", odoValue = " + c.getString(odoValueColIndex) +
-                                            ", carNumber = " + c.getString(carNumberColIndex) +
-                                            ", password = " + c.getString(passwordColIndex));
+                                    "ID = " + cur.getInt(idColIndex) +
+                                            ", userName = " + cur.getString(userNameColIndex) +
+                                            ", carModel = " + cur.getString(carModelColIndex) +
+                                            ", carMark = " + cur.getString(carMarkColIndex) +
+                                            ", odoValue = " + cur.getString(odoValueColIndex) +
+                                            ", carNumber = " + cur.getString(carNumberColIndex) +
+                                            ", password = " + cur.getString(passwordColIndex));
 
                             Intent intent1 = new Intent(CreateProfile.this, ProfileActivity.class);
-                            intent1.putExtra("row", c.getString(idColIndex));//Передача данных id из базы в др активити
+                            intent1.putExtra("row", cur.getString(idColIndex));//Передача данных id из базы в др активити
                             startActivity(intent1);//переход в активити
                             // переход на следующую строку
                             // а если следующей нет (текущая - последняя), то false - выходим из цикла
-                        } while (c.moveToNext());
+                        } while (cur.moveToNext());
                     } else
                         Log.d(LOG_TAG, "0 rows");
-                    c.close();
+                    cur.close();
                     break;
                 case R.id.BtnBack:
                     Intent intent = new Intent(CreateProfile.this, MainActivity.class);
@@ -183,7 +180,7 @@ public class CreateProfile extends Activity implements OnClickListener {
                     break;
             }
             // закрываем подключение к БД
-            dbHelper.close();
+            workWithDBCreateProf.close();
         }
     }
 }

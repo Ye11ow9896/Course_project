@@ -17,6 +17,7 @@ import java.io.OutputStream;
 
 class DBHelper extends SQLiteOpenHelper {
 
+    int idMytable, idValueMaintenace;//переменная для айди таблицы mytable и maintenance
 
     public DBHelper(Context context) {
         // конструктор суперкласса
@@ -31,22 +32,14 @@ class DBHelper extends SQLiteOpenHelper {
     private static String DB_PATH;
     private static String DB_NAME = "myDB.db";
     private static final int SCHEMA = 1; // версия базы данных
-    //static final String TABLE = "Maintenance"; // название таблицы в бд
-    //// названия столбцов
-    //static final String COLUMN_AUTO = "Auto";
-    //static final String COLUMN_MODEL = "Model";
-    //static final String COLUMN_YEAR = "YearOfIssue";
-    //static final String COLUMN_PADCHANGE = "BrakePadChange";
-    //static final String COLUMN_DISCCHANGE = "BrakeDiscChange";
-    //static final String COLUMN_MOILCHANGE = "MotorOilChange";
     private Context myContext;
-
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
        Log.d(LOG_TAG, "--- onCreate database ---");
        // создаем таблицу с полями
+        ContentValues cv = new ContentValues();
+
        db.execSQL("create table mytable ("
                + "id integer primary key autoincrement,"
                + "carNumber text,"
@@ -56,8 +49,17 @@ class DBHelper extends SQLiteOpenHelper {
                + "carMark text,"
                + "password text"
                + ");");
+       /*тестовый профиль*/
+        cv.clear();
+        cv.put("carNumber", "a");
+        cv.put("odoValue", 199999);
+        cv.put("userName", "Сергей Коклюш");
+        cv.put("carModel", "Lada");
+        cv.put("carMark", "Granta");
+        cv.put("password", "a");
+        db.insert("mytable", null, cv);
+        /*конец тест профиля*/
 
-        ContentValues cv = new ContentValues();
         // создаем таблицу с полями по ТО автомобилей
         db.execSQL("create table maintenance ("
                 + "id integer primary key autoincrement,"
@@ -68,28 +70,32 @@ class DBHelper extends SQLiteOpenHelper {
                 + "brakeDiscChange INTEGER,"
                 + "motorOilChange INTEGER"
                 + ");");
-        cv.clear();
-        cv.put("auto", "Volkswagen");
-        cv.put("model", "Polo");
-        cv.put("yearOfIssue", 2018);
-        cv.put("brakePadChange", 15000);
-        cv.put("brakeDiscChange", 25000);
-        cv.put("motorOilChange", 10000);
-        db.insert("maintenance", null, cv);
-        cv.put("auto", "Volkswagen");
-        cv.put("model", "Golf");
-        cv.put("yearOfIssue", 2019);
-        cv.put("brakePadChange", 16000);
-        cv.put("brakeDiscChange", 28000);
-        cv.put("motorOilChange", 11000);
-        db.insert("maintenance", null, cv);
 
+
+        cv.clear();
+        /*Подготовка данных для загрузку в БД*/
+        String auto [] =            {"Volkswagen", "Volkswagen", "Lada"     };
+        String model [] =           {"Polo",       "Golf",       "Granta"   };
+        int yearOfIssue[] =         {2018,         2019,          2015      };
+        int brakePadChange [] =     {15000,        16000,         14000     };
+        int brakeDiscChange [] =    {25000,        28000,         23000     };
+        int motorOilChange [] =     {10000,        11000,         10000     };
+        /*загрузка данных в таблицу мэинтенс*/
+        for( int i = 0;i < auto.length; i++)
+        {
+            cv.put("auto", auto[i]);
+            cv.put("model", model[i]);
+            cv.put("yearOfIssue", yearOfIssue[i]);
+            cv.put("brakePadChange", brakePadChange[i]);
+            cv.put("brakeDiscChange", brakeDiscChange[i]);
+            cv.put("motorOilChange", motorOilChange[i]);
+        }
+        db.insert("maintenance", null, cv);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-
 
 }

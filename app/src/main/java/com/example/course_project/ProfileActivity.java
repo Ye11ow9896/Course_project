@@ -3,13 +3,10 @@ package com.example.course_project;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
@@ -17,10 +14,9 @@ public class ProfileActivity extends Activity implements OnClickListener {
 
     final String LOG_TAG = "myLogs";
     /*Используемые переменные*/
-    int odoVal;
-    Button start, stop, alarm;
-    TextView carNumber, odoValue;
-    DBHelper dbHelper;
+    private Button start, stop, alarm, settings;
+    private TextView carNumber, odoValue;
+    private WorkWithDB workWithDBProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +36,11 @@ public class ProfileActivity extends Activity implements OnClickListener {
         alarm = (Button) findViewById(R.id.BtnAlert);
         alarm.setOnClickListener(this);
 
+        settings = (Button)findViewById(R.id.btnSettings);
+        settings.setOnClickListener(this);
+
+        workWithDBProfile = new WorkWithDB(this);
+
         dataView();//функция отображения данных в активити
     }
 
@@ -57,34 +58,35 @@ public class ProfileActivity extends Activity implements OnClickListener {
 
             case R.id.BtnAlert: //Нажатие алерт - вывод бортового журнала
                 Intent intentBoardJournal = new Intent(ProfileActivity.this, BoardJournalActivity.class);
-                intentBoardJournal.putExtra("odoValue", odoVal);
+                //intentBoardJournal.putExtra("odoValue", odoVal);
                 startActivity(intentBoardJournal);
+                break;
+            case R.id.btnSettings: //по нажатию передаем значение айдишника строки с данными из таблицы
+                Intent intentSettings = new Intent(ProfileActivity.this, SettingsActivity.class);
+                //intentSettings.putExtra("rowValue", rowValue);
+                startActivity(intentSettings);
                 break;
         }
     }
 
     //Функция отображения данных авторизованного пользователя
     void dataView() {
-        dbHelper = new DBHelper(this);                  //создаем объект класса DBHelper
-        SQLiteDatabase db = dbHelper.getWritableDatabase();     //Метод getWritable... создает БД или, если она создана, то предоставляет доступ на запись/чтение
-        Cursor c = db.query("mytable", null, null, null, null, null, null); //создаем таблицу в БД
+        Cursor cur = workWithDBProfile.getAccessToDB().query("mytable", null, null, null, null, null, null);//создаем таблицу в БД
 
         /*задаем интовые переменные, которые соответствуют номеру колонок*/
-        int carNumberColIndex = c.getColumnIndex("carNumber");
-        int odoValueColIndex = c.getColumnIndex("odoValue");
-        /*получаем значение id строки из мэйн активити*/
-        Intent intent1 = getIntent();
-        String row = intent1.getStringExtra("row");
-        Integer rowValue = new Integer(row) - 1;//преобразуем string id в int и вычитаем 1 для получения номера строки в таблице БД
+        int carNumberColIndex = cur.getColumnIndex("carNumber");
+        int odoValueColIndex = cur.getColumnIndex("odoValue");
+        int idColIndex = cur.getColumnIndex("id");
 
-        c.moveToPosition(rowValue);//устанавливаем курсор на нужную нам строку
-        Log.d(LOG_TAG, c.getString(carNumberColIndex));
-        Log.d(LOG_TAG, c.getString(odoValueColIndex));
+        /*получаем значение id строки из мэйн активити*/
+        cur.moveToPosition(workWithDBProfile.getIdMytable());//устанавливаем курсор на нужную нам строку
+        Log.d(LOG_TAG, cur.getString(carNumberColIndex));
+        Log.d(LOG_TAG, cur.getString(odoValueColIndex));
+        Log.d(LOG_TAG, cur.getString(idColIndex));
 
         //Выводим данные профиля в поля активити (Номер машины и значение одометра)
-        carNumber.setText(String.valueOf(c.getString(carNumberColIndex)));
-        odoValue.setText(String.valueOf(c.getString(odoValueColIndex)));
-        odoVal = c.getInt(odoValueColIndex);
-        c.close();//закрываем курсор
+        carNumber.setText(String.valueOf(cur.getString(carNumberColIndex)));
+        odoValue.setText(String.valueOf(cur.getString(odoValueColIndex)));
+        cur.close();//закрываем курсор
     }
 }
