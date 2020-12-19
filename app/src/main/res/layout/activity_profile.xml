@@ -36,18 +36,17 @@
             android:inputType="textPersonName"
             android:hint="Пробег автомобиля" />
 
-        <Button
-            android:id="@+id/BtnStart"
+        <ToggleButton
+            android:id="@+id/BtnStartStop"
             android:layout_marginTop="50dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Старт" />
+            android:layout_width="280dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:textOff="Старт"
+            android:textOn="Стоп"
+            android:checked="false" />
 
-        <Button
-            android:id="@+id/BtnStop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Стоп" />
+
 
         <Button
             android:id="@+id/BtnAlert"

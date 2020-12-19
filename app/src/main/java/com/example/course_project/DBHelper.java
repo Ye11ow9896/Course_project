@@ -2,6 +2,7 @@ package com.example.course_project;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -16,8 +17,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 class DBHelper extends SQLiteOpenHelper {
-
-    int idMytable, idValueMaintenace;//переменная для айди таблицы mytable и maintenance
 
     public DBHelper(Context context) {
         // конструктор суперкласса
@@ -36,6 +35,7 @@ class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
        Log.d(LOG_TAG, "--- onCreate database ---");
        // создаем таблицу с полями
         ContentValues cv = new ContentValues();
@@ -89,8 +89,9 @@ class DBHelper extends SQLiteOpenHelper {
             cv.put("brakePadChange", brakePadChange[i]);
             cv.put("brakeDiscChange", brakeDiscChange[i]);
             cv.put("motorOilChange", motorOilChange[i]);
+            db.insert("maintenance", null, cv);
         }
-        db.insert("maintenance", null, cv);
+
     }
 
     @Override

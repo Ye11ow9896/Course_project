@@ -61,10 +61,8 @@ public class BoardJournalActivity extends Activity implements OnClickListener {
 
         Cursor cur = workWithDBBoardJur.getAccessToDB().query("maintenance", null, null, null, null, null, null);//создаем таблицу в БД
 
-        cur.moveToPosition(workWithDBBoardJur.idValueMaintenace);
-        int valbrakePadChange, valbrakeDiscChange, valmotorOilChange;
-
-        if (cur.moveToFirst()) {
+        cur.moveToPosition(workWithDBBoardJur.getCursorMaintenance());
+        
             // определяем номера столбцов по имени в выборке
             int autoColIndex = cur.getColumnIndex("auto");
             int modelColIndex = cur.getColumnIndex("model");
@@ -72,28 +70,19 @@ public class BoardJournalActivity extends Activity implements OnClickListener {
             int brakePadChangeColIndex = cur.getColumnIndex("brakePadChange");
             int brakeDiscChangeColIndex = cur.getColumnIndex("brakeDiscChange");
             int motorOilChangeColIndex = cur.getColumnIndex("motorOilChange");
-            do {
-                // получаем значения по номерам
-                valbrakePadChange = cur.getInt(brakePadChangeColIndex);
-                valbrakeDiscChange = cur.getInt(brakeDiscChangeColIndex);
-                valmotorOilChange = cur.getInt(motorOilChangeColIndex);
-                // а если следующей нет (текущая - последняя), то false - выходим из цикла
-            } while (cur.moveToNext());
-            cur.close();
 
             /*Отображаем сколько осталось до работ с помощью прогрессбара*/
-            progressBar1.setMax(valbrakePadChange);//макс значение прогрессбар
-            progressBar1.setProgress(workWithDBBoardJur.odoValue % valbrakePadChange);//значение для отображения прогресс бар.
-            brakePadChange.setText(String.valueOf(valbrakePadChange - progressBar1.getProgress()));
+            progressBar1.setMax(cur.getInt(brakePadChangeColIndex));//макс значение прогрессбар
+            progressBar1.setProgress(workWithDBBoardJur.odoValue % cur.getInt(brakePadChangeColIndex));//значение для отображения прогресс бар.
+            brakePadChange.setText(String.valueOf(cur.getInt(brakePadChangeColIndex) - progressBar1.getProgress()));
             
-            progressBar2.setMax(valmotorOilChange);
-            progressBar2.setProgress(workWithDBBoardJur.odoValue % valbrakeDiscChange);
-            motorOilChange.setText(String.valueOf(valmotorOilChange - progressBar2.getProgress()));
+            progressBar2.setMax(cur.getInt(brakeDiscChangeColIndex));
+            progressBar2.setProgress(workWithDBBoardJur.odoValue % cur.getInt(brakeDiscChangeColIndex));
+            motorOilChange.setText(String.valueOf(cur.getInt(brakeDiscChangeColIndex) - progressBar2.getProgress()));
             
-            progressBar3.setMax(valbrakeDiscChange);
-            progressBar3.setProgress(workWithDBBoardJur.odoValue % valbrakeDiscChange);
-            brakeDiscChange.setText(String.valueOf(valbrakeDiscChange - progressBar3.getProgress()));
-        }
-
+            progressBar3.setMax(cur.getInt(motorOilChangeColIndex));
+            progressBar3.setProgress(workWithDBBoardJur.odoValue % cur.getInt(motorOilChangeColIndex));
+            brakeDiscChange.setText(String.valueOf(cur.getInt(motorOilChangeColIndex) - progressBar3.getProgress()));
+            cur.close();
     }
 }

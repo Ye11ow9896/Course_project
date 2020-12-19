@@ -8,16 +8,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.view.View.OnClickListener;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class ProfileActivity extends Activity implements OnClickListener {
 
-    final String LOG_TAG = "myLogs";
     /*Используемые переменные*/
-    private Button start, stop, alarm, settings;
+    private Button alarm, settings;
     private TextView carNumber, odoValue;
     private WorkWithDB workWithDBProfile;
-
+    private ToggleButton toggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,17 +29,13 @@ public class ProfileActivity extends Activity implements OnClickListener {
         carNumber = (TextView) findViewById(R.id.NumberCarText);
         odoValue = (TextView) findViewById(R.id.OdoValueText);
 
-        start = (Button) findViewById(R.id.BtnStart);
-        start.setOnClickListener(this);
-
-        stop = (Button) findViewById(R.id.BtnStop);
-        stop.setOnClickListener(this);
-
         alarm = (Button) findViewById(R.id.BtnAlert);
         alarm.setOnClickListener(this);
 
         settings = (Button)findViewById(R.id.btnSettings);
         settings.setOnClickListener(this);
+
+        toggle = (ToggleButton)findViewById(R.id.BtnStartStop);
 
         workWithDBProfile = new WorkWithDB(this);
 
@@ -50,20 +48,32 @@ public class ProfileActivity extends Activity implements OnClickListener {
         /*конструкция свитч по ID кнопки*/
         switch (v.getId()) {      //получаем ID кнопки
 
-            case R.id.BtnStart: //Нажатие старт - запуск счетчика километража
-                break;
-
-            case R.id.BtnStop: //Нажатие стоп - останов счетчика
+            case R.id.BtnStartStop:
+                toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (buttonView.isChecked()) {
+                            Toast.makeText(getApplicationContext(), "Checked", Toast.LENGTH_SHORT).show();
+                            //КНОПКА ВКЮСЕНА
+                            //КНОПКА ВКЮСЕНА
+                            //КНОПКА ВКЮСЕНА
+                            //КНОПКА ВКЮСЕНА
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Not checked", Toast.LENGTH_SHORT).show();
+                            //КНОПКА ВЫКЮСЕНА
+                            //КНОПКА ВЫКЮСЕНА
+                            //КНОПКА ВЫКЮСЕНА
+                            //КНОПКА ВЫКЮСЕНА
+                        }
+                    }
+                });
                 break;
 
             case R.id.BtnAlert: //Нажатие алерт - вывод бортового журнала
                 Intent intentBoardJournal = new Intent(ProfileActivity.this, BoardJournalActivity.class);
-                //intentBoardJournal.putExtra("odoValue", odoVal);
                 startActivity(intentBoardJournal);
                 break;
             case R.id.btnSettings: //по нажатию передаем значение айдишника строки с данными из таблицы
                 Intent intentSettings = new Intent(ProfileActivity.this, SettingsActivity.class);
-                //intentSettings.putExtra("rowValue", rowValue);
                 startActivity(intentSettings);
                 break;
         }
@@ -75,15 +85,12 @@ public class ProfileActivity extends Activity implements OnClickListener {
 
         /*задаем интовые переменные, которые соответствуют номеру колонок*/
         int carNumberColIndex = cur.getColumnIndex("carNumber");
+        String l = cur.getColumnName(carNumberColIndex);
         int odoValueColIndex = cur.getColumnIndex("odoValue");
         int idColIndex = cur.getColumnIndex("id");
 
         /*получаем значение id строки из мэйн активити*/
-        cur.moveToPosition(workWithDBProfile.getIdMytable());//устанавливаем курсор на нужную нам строку
-        Log.d(LOG_TAG, cur.getString(carNumberColIndex));
-        Log.d(LOG_TAG, cur.getString(odoValueColIndex));
-        Log.d(LOG_TAG, cur.getString(idColIndex));
-
+        cur.moveToPosition(workWithDBProfile.getCursorMytable());//устанавливаем курсор на нужную нам строку
         //Выводим данные профиля в поля активити (Номер машины и значение одометра)
         carNumber.setText(String.valueOf(cur.getString(carNumberColIndex)));
         odoValue.setText(String.valueOf(cur.getString(odoValueColIndex)));

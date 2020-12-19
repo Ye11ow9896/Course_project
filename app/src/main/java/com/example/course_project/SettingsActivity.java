@@ -1,12 +1,14 @@
 package com.example.course_project;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,13 +20,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity implements OnClickListener {
 
-    private Button btnName, btnCarNumber, btnOdoValue, btnPassword;
-    private DBHelper dbHelper;
+    final String LOG_TAG = "myLogs";
+    private Button btnName, btnCarNumber, btnOdoValue, btnPassword, btnBack, deleteProfile;
+    private int ID;
     final Context context = this;
-    private TextView final_text;
-    private int rowValue;
-    String newPassword;
-    
+    String newData;
+    WorkWithDB workWithDBSA;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,103 +44,109 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
         btnPassword = (Button)findViewById(R.id.password);
         btnPassword.setOnClickListener(this);
 
-        dbHelper = new DBHelper(this);
+        btnBack = (Button)findViewById(R.id.btnBackPA);
+        btnBack.setOnClickListener(this);
 
+        deleteProfile = (Button)findViewById(R.id.deleteProfile);
+        deleteProfile.setOnClickListener(this);
 
+        workWithDBSA = new WorkWithDB(this);
     }
 
     @Override
     public void onClick(View v) {
-        ChangeOfBD();
         switch (v.getId())
         {
             case R.id.name:
-
-                //Получаем вид с файла prompt.xml, который применим для диалогового окна:
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.alert_dialog, null);
-
-                //Создаем AlertDialog
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
-
-                //Настраиваем prompt.xml для нашего AlertDialog:
-                mDialogBuilder.setView(promptsView);
-
-                //Настраиваем отображение поля для ввода текста в открытом диалоге:
-                final EditText userInput = (EditText) promptsView.findViewById(R.id.input_text);
-
-                //Настраиваем сообщение в диалоговом окне:
-                mDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-
-                                        newPassword = userInput.getText().toString();//получаем данные в переменную из тестового поля
-
-                                    }
-                                })
-                        .setNegativeButton("Отмена",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                //Создаем AlertDialog:
-                AlertDialog alertDialog = mDialogBuilder.create();
-
-                //и отображаем его:
-                alertDialog.show();
-
+               Dialog("userName");
                 break;
-
             case R.id.password:
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(SettingsActivity.this);
-                builder1.setTitle("ошибка")
-                        .setMessage("Авто нет в базе данных")
-                        .create();
-                AlertDialog alert1 = builder1.create();
-                alert1.show();
+               Dialog("password");
                 break;
             case R.id.carNumber:
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(SettingsActivity.this);
-                builder2.setTitle("ошибка")
-                        .setMessage("Авто нет в базе данных")
-                        .create();
-                AlertDialog alert2 = builder2.create();
-                alert2.show();
+               Dialog("carNumber");
                 break;
             case R.id.odoValue:
-                AlertDialog.Builder builder3 = new AlertDialog.Builder(SettingsActivity.this);
-                builder3.setTitle("ошибка")
-                        .setMessage("Авто нет в базе данных")
-                        .create();
-                AlertDialog alert3 = builder3.create();
-                alert3.show();
+               Dialog("odoValue");
                 break;
+            case R.id.deleteProfile:
+
+                break;
+            case R.id.btnBackPA:
+                Intent intentProfileActivity = new Intent(SettingsActivity.this, ProfileActivity.class);
+                startActivity(intentProfileActivity);
+                break;
+
+
+            }
         }
+    //функция для вывода алерта, в котором можно менять данные.
+    // В качестве аргументов получает наименование колонки, с которой необходимо провести работу
+    public void Dialog(String column) {
+        LayoutInflater li = LayoutInflater.from(context);
+        View promptsView = li.inflate(R.layout.alert_dialog, null);
+        //Создаем AlertDialog
+        AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
+        //Настраиваем prompt.xml для нашего AlertDialog:
+        mDialogBuilder.setView(promptsView);
+        //Настраиваем отображение поля для ввода текста в открытом диалоге:
+        final EditText userInput = (EditText) promptsView.findViewById(R.id.input_text);
+        mDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                newData = userInput.getText().toString();//получаем данные в переменную из тестового поля
+                                ID = workWithDBSA.idValueMytable;
+                                ContentValues cv = new ContentValues();
+                                if (column.equals("odoValue")) {
+                                    Integer ov = new Integer(newData);
+                                    cv.put(column, ov);
+                                    workWithDBSA.setOdoValue(ov);
+                                }
+                                else
+                                     cv.put(column, newData);
+                                workWithDBSA.getAccessToDB().update("mytable", cv, "ID = " + ID, null);
+                                logs();
+                            }
+                        })
+                .setNegativeButton("Отмена",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertDialog = mDialogBuilder.create();
+        alertDialog.show();
     }
+    private void logs() {
+        Cursor c = workWithDBSA.getAccessToDB().query("mytable", null, null, null, null, null, null);//создаем таблицу в БД
 
-    int getId() {
-        int rowValue;
-        Intent intentSettings = getIntent();
-        rowValue = intentSettings.getIntExtra("rowValue", 0);
-        return rowValue;
-    }
+        if (c.moveToFirst()) {
+            // определяем номера столбцов по имени в выборке
+            int idColIndex = c.getColumnIndex("id");
+            int nameColIndex = c.getColumnIndex("carNumber");
+            int emailColIndex = c.getColumnIndex("odoValue");
+            int emailColInde = c.getColumnIndex("userName");
+            int emailColInd = c.getColumnIndex("carModel");
+            int emailColIn = c.getColumnIndex("carMark");
+            int emailColI = c.getColumnIndex("password");
 
-    void ChangeOfBD() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase(); //Метод getWritable... создает БД или, если она создана, то предоставляет доступ на запись/чтение
-        Cursor c = db.query("mytable", null, null, null, null, null, null);//создаем таблицу в БД
-
-        c.moveToPosition(getId());
-        /*индексы значений в БД*/
-        int idColIndex = c.getColumnIndex("id");
-        int userNameColIndex = c.getColumnIndex("userName");
-        int carModelColIndex = c.getColumnIndex("carModel");
-        int carMarkColIndex = c.getColumnIndex("carMark");
-        int carNumberColIndex = c.getColumnIndex("carNumber");
-        int odoValueColIndex = c.getColumnIndex("odoValue");
-        int passwordColIndex = c.getColumnIndex("password");
+            do {
+                // получаем значения по номерам столбцов и пишем все в лог
+                Log.d(LOG_TAG,
+                        "ID = " + c.getInt(idColIndex) + ",carnum = "
+                                + c.getString(nameColIndex) + ", odoval = "
+                                + c.getString(emailColIndex)+ ", email = "
+                                + c.getString(emailColInde)+ ", email = "
+                                + c.getString(emailColIn)+ ", email = "
+                                + c.getString(emailColI)+ ", email = "
+                                + c.getString(emailColInd)
+                );
+                // переход на следующую строку
+                // а если следующей нет (текущая - последняя), то false -
+                // выходим из цикла
+            } while (c.moveToNext());
+        }
     }
 }
