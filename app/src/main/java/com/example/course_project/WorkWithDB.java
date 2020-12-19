@@ -102,6 +102,7 @@ public class WorkWithDB extends DBHelper {
                         setOdoValue((cur.getInt(getFieldOfDB("mytable", "odoValue"))));//взятие значения одометра
                         setDataOfCar(cur.getString(getFieldOfDB("mytable", "carModel")),
                                      cur.getString(getFieldOfDB("mytable", "carMark")));//взятие значения модели и марки машины
+                        searchCarInDB(cur.getString(getFieldOfDB("mytable", "carMark")), cur.getString(getFieldOfDB("mytable", "carModel")));
                         /*переход в др активити*/
                         break;
                     }
