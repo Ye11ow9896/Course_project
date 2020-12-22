@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.view.View.OnClickListener;
@@ -72,7 +71,7 @@ public class ProfileActivity extends Activity implements OnClickListener {
                 Intent intentBoardJournal = new Intent(ProfileActivity.this, BoardJournalActivity.class);
                 startActivity(intentBoardJournal);
                 break;
-            case R.id.btnSettings: //по нажатию передаем значение айдишника строки с данными из таблицы
+            case R.id.btnSettings: //переход в настройки
                 Intent intentSettings = new Intent(ProfileActivity.this, SettingsActivity.class);
                 startActivity(intentSettings);
                 break;
@@ -82,18 +81,11 @@ public class ProfileActivity extends Activity implements OnClickListener {
     //Функция отображения данных авторизованного пользователя
     void dataView() {
         Cursor cur = workWithDBProfile.getAccessToDB().query("mytable", null, null, null, null, null, null);//создаем таблицу в БД
-
-        /*задаем интовые переменные, которые соответствуют номеру колонок*/
-        int carNumberColIndex = cur.getColumnIndex("carNumber");
-        String l = cur.getColumnName(carNumberColIndex);
-        int odoValueColIndex = cur.getColumnIndex("odoValue");
-        int idColIndex = cur.getColumnIndex("id");
-
         /*получаем значение id строки из мэйн активити*/
-        cur.moveToPosition(workWithDBProfile.getCursorMytable());//устанавливаем курсор на нужную нам строку
+        cur.moveToPosition(workWithDBProfile.getCursorPositionMytable());//устанавливаем курсор на нужную нам строку
         //Выводим данные профиля в поля активити (Номер машины и значение одометра)
-        carNumber.setText(String.valueOf(cur.getString(carNumberColIndex)));
-        odoValue.setText(String.valueOf(cur.getString(odoValueColIndex)));
+        carNumber.setText(String.valueOf(cur.getString(workWithDBProfile.getFieldOfDB("mytable", "carNumber"))));
+        odoValue.setText(String.valueOf(cur.getString(workWithDBProfile.getFieldOfDB("mytable", "odoValue"))));
         cur.close();//закрываем курсор
     }
 }

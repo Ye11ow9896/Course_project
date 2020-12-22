@@ -54,8 +54,8 @@ class DBHelper extends SQLiteOpenHelper {
         cv.put("carNumber", "a");
         cv.put("odoValue", 199999);
         cv.put("userName", "Сергей Коклюш");
-        cv.put("carModel", "Lada");
-        cv.put("carMark", "Granta");
+        cv.put("carMark", "Lada");
+        cv.put("carModel", "Granta");
         cv.put("password", "a");
         db.insert("mytable", null, cv);
         /*конец тест профиля*/
@@ -63,7 +63,7 @@ class DBHelper extends SQLiteOpenHelper {
         // создаем таблицу с полями по ТО автомобилей
         db.execSQL("create table maintenance ("
                 + "id integer primary key autoincrement,"
-                + "auto text,"
+                + "mark text,"
                 + "model text,"
                 + "yearOfIssue text,"
                 + "brakePadChange INTEGER,"
@@ -71,19 +71,18 @@ class DBHelper extends SQLiteOpenHelper {
                 + "motorOilChange INTEGER"
                 + ");");
 
-
         cv.clear();
         /*Подготовка данных для загрузку в БД*/
-        String auto [] =            {"Volkswagen", "Volkswagen", "Lada"     };
+        String mark [] =            {"Volkswagen", "Volkswagen", "Lada"     };
         String model [] =           {"Polo",       "Golf",       "Granta"   };
         int yearOfIssue[] =         {2018,         2019,          2015      };
         int brakePadChange [] =     {15000,        16000,         14000     };
         int brakeDiscChange [] =    {25000,        28000,         23000     };
         int motorOilChange [] =     {10000,        11000,         10000     };
         /*загрузка данных в таблицу мэинтенс*/
-        for( int i = 0;i < auto.length; i++)
+        for( int i = 0;i < mark.length; i++)
         {
-            cv.put("auto", auto[i]);
+            cv.put("mark", mark[i]);
             cv.put("model", model[i]);
             cv.put("yearOfIssue", yearOfIssue[i]);
             cv.put("brakePadChange", brakePadChange[i]);

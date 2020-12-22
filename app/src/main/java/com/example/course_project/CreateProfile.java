@@ -51,29 +51,17 @@ public class CreateProfile extends Activity implements OnClickListener {
 
                         // подготовим данные для вставки в виде пар: наименование столбца - значение
                         cv.put("userName", etUserName.getText().toString());
-                        cv.put("carModel", etCarMark.getText().toString());
-                        cv.put("carMark", etCarModel.getText().toString());
+                        cv.put("carModel", etCarModel.getText().toString());
+                        cv.put("carMark", etCarMark.getText().toString());
                         cv.put("odoValue", new Integer(etOdoValue.getText().toString()));
                         cv.put("carNumber", etCarNumber.getText().toString());
                         cv.put("password", etPassword.getText().toString());
-
-                        // вставляем запись и получаем ее ID
-                        int rowID = new Integer((int) workWithDBCreateProf.getAccessToDB().insert("mytable", null, cv));
-                        workWithDBCreateProf.setIdMytable(rowID);//отправка в переменную класса значение ИД
-
-                        Cursor cur = workWithDBCreateProf.getAccessToDB().query("mytable", null, null, null, null, null, null);//создаем таблицу в БД
-                        cur.moveToPosition(workWithDBCreateProf.getCursorMytable());
-
-                        workWithDBCreateProf.setOdoValue(cur.getInt(workWithDBCreateProf.getFieldOfDB("mytable",
-                                "odoValue")));//передаем значения в класс для дальнейшей работы с таблицами
-                        workWithDBCreateProf.setIdMytable(cur.getInt(workWithDBCreateProf.getFieldOfDB("mytable",
-                                "id")));//передаем значения в класс для дальнейшей работы с таблицами
-
-                        workWithDBCreateProf.close();//закрываем БД
-                        cur.close();//закрываем курсор
+                        workWithDBCreateProf.getAccessToDB().insert("mytable",null, cv);//записываем сл стоку в таблицу пользователей
+                        workWithDBCreateProf.logIn(etUserName.getText().toString(), etPassword.getText().toString());//авторизуемся
                         /*переходим в др активити*/
                         Intent intent1 = new Intent(CreateProfile.this, ProfileActivity.class);
                         startActivity(intent1);//переход в активити
+
                     } else {//если метод searchCarInDB вернул фолс, вызываем алерт с сообщением
                         AlertDialog.Builder builder = new AlertDialog.Builder(CreateProfile.this);
                                builder.setTitle("ошибка")

@@ -36,6 +36,7 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:hint="Имя владельца" />
+
         <EditText
             android:id="@+id/Password"
             android:layout_width="match_parent"
@@ -43,13 +44,14 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:hint="Пароль" />
+
         <EditText
             android:id="@+id/CarModel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:hint="Марка авто" />
+            android:hint="Модель авто" />
 
         <EditText
             android:id="@+id/CarMark"
@@ -57,7 +59,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:hint="Модель авто" />
+            android:hint="Марка авто" />
 
         <EditText
             android:id="@+id/NumberOfCar"

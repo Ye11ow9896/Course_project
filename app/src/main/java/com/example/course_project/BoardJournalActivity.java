@@ -61,7 +61,7 @@ public class BoardJournalActivity extends Activity implements OnClickListener {
 
         Cursor cur = workWithDBBoardJur.getAccessToDB().query("maintenance", null, null, null, null, null, null);//создаем таблицу в БД
 
-        cur.moveToPosition(workWithDBBoardJur.getCursorMaintenance());
+        cur.moveToPosition(workWithDBBoardJur.getCursorMaintenance()-1);
         
             // определяем номера столбцов по имени в выборке
             int autoColIndex = cur.getColumnIndex("auto");

@@ -51,19 +51,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 break;
 
             case R.id.btnLoginProfile://пытаемся авторизоваться
-                String name = textName.getText().toString();
-                String pass = textPassword.getText().toString();
-                if (workWithDBMain.logIn(name, pass)) {//если данные нашлись переходим в другую активити
-                    Intent intent1 = new Intent(MainActivity.this, ProfileActivity.class);
-                    startActivity(intent1);//переход в активити
-                }
-                else {//иначе выводим алерт
+                if(workWithDBMain.logIn(textName.getText().toString(), textPassword.getText().toString())) {//если введенные имя и пароль есть в БД
+                    Intent intent1 = new Intent(MainActivity.this, ProfileActivity.class);//переходим в активити профиля
+                    startActivity(intent1);
+                } else {//иначе выводим алерт
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle("ошибка")
-                            .setMessage("неверно введены данные")
-                            .create();
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                            builder.setTitle("ошибка")
+                                    .setMessage("неверно введены данные")
+                                    .create();
+                            AlertDialog alert = builder.create();
+                            alert.show();
                 }
         }
     }

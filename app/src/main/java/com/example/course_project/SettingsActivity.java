@@ -55,34 +55,37 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
     @Override
     public void onClick(View v) {
+        String name = (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "name")));
+        String pass = (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "password")));
+        String carNumb = (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "carNumber")));
+        String odoVal = (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "odoValue")));
         switch (v.getId())
         {
             case R.id.name:
-               Dialog("userName");
+               Dialog("userName", (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "userName"))));
                 break;
             case R.id.password:
-               Dialog("password");
+               Dialog("password", (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "password"))));
                 break;
             case R.id.carNumber:
-               Dialog("carNumber");
+               Dialog("carNumber", (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "carNumber"))));
                 break;
             case R.id.odoValue:
-               Dialog("odoValue");
+               Dialog("odoValue", (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "odoValue"))));
                 break;
             case R.id.deleteProfile:
-
+               DeleteRowTable();
                 break;
             case R.id.btnBackPA:
                 Intent intentProfileActivity = new Intent(SettingsActivity.this, ProfileActivity.class);
                 startActivity(intentProfileActivity);
                 break;
-
-
             }
         }
     //функция для вывода алерта, в котором можно менять данные.
     // В качестве аргументов получает наименование колонки, с которой необходимо провести работу
-    public void Dialog(String column) {
+    private void Dialog(String column, String nameOper) {
+
         LayoutInflater li = LayoutInflater.from(context);
         View promptsView = li.inflate(R.layout.alert_dialog, null);
         //Создаем AlertDialog
@@ -90,24 +93,30 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
         //Настраиваем prompt.xml для нашего AlertDialog:
         mDialogBuilder.setView(promptsView);
         //Настраиваем отображение поля для ввода текста в открытом диалоге:
+        final TextView nameOperation = (TextView) promptsView.findViewById(R.id.nameOperation);
+        nameOperation.setText(nameOper);
         final EditText userInput = (EditText) promptsView.findViewById(R.id.input_text);
         mDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                Cursor cur = workWithDBSA.getAccessToDB().query("mytable", null, null, null, null, null, null);
+
+                                cur.moveToPosition(workWithDBSA.getCursorPositionMytable());//передаем курсор, т.о. устанавливаем курсор в позиции на нужной строке
+                                int c = workWithDBSA.getCursorPositionMytable();
+                                ID = Integer.valueOf(cur.getString(cur.getColumnIndex("id")));//берем из БД айди этого профиля и присваиваем переменной
                                 newData = userInput.getText().toString();//получаем данные в переменную из тестового поля
-                                ID = workWithDBSA.idValueMytable;
                                 ContentValues cv = new ContentValues();
                                 if (column.equals("odoValue")) {
                                     Integer ov = new Integer(newData);
                                     cv.put(column, ov);
-                                    workWithDBSA.setOdoValue(ov);
                                 }
                                 else
                                      cv.put(column, newData);
                                 workWithDBSA.getAccessToDB().update("mytable", cv, "ID = " + ID, null);
                                 logs();
+                                workWithDBSA.close();
                             }
                         })
                 .setNegativeButton("Отмена",
@@ -148,5 +157,26 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
                 // выходим из цикла
             } while (c.moveToNext());
         }
+    }
+    private void DeleteRowTable() {
+        Cursor cur = workWithDBSA.getAccessToDB().query("mytable", null, null, null, null, null, null);
+        cur.moveToPosition(workWithDBSA.getCursorPositionMytable());//передаем курсор, т.о. устанавливаем курсор в позиции на нужной строке
+        ID = Integer.valueOf(cur.getString(cur.getColumnIndex("id")));//берем из БД айди этого профиля и присваиваем переменной
+        workWithDBSA.getAccessToDB().delete("mytable","ID = " + ID, null);
+        logs();
+        workWithDBSA.close();
+        /*алерт об удалении учетки, переход в мэин активити*/
+        AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+        builder.setTitle("учетная запись была удалена")
+                .setPositiveButton("ОК",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent goToMain = new Intent(SettingsActivity.this, MainActivity.class);
+                                startActivity(goToMain);
+                            }
+                        })
+                .create();
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }
