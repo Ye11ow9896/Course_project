@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         textPassword = (EditText) findViewById(R.id.editTextTextPassword);
 
         workWithDBMain = new WorkWithDB(this);
+
     }
 
     @Override
@@ -52,6 +53,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
             case R.id.btnLoginProfile://пытаемся авторизоваться
                 if(workWithDBMain.logIn(textName.getText().toString(), textPassword.getText().toString())) {//если введенные имя и пароль есть в БД
+                    String carMark = workWithDBMain.getFieldOfDB("mytable", "carMark",
+                            workWithDBMain.getCursorPositionMytable());
+                    String carModel = workWithDBMain.getFieldOfDB("mytable", "carModel",
+                            workWithDBMain.getCursorPositionMytable());
+                    workWithDBMain.searchCarInDB(carMark, carModel);//ищем авто в базе данных и берем курсор
                     Intent intent1 = new Intent(MainActivity.this, ProfileActivity.class);//переходим в активити профиля
                     startActivity(intent1);
                 } else {//иначе выводим алерт

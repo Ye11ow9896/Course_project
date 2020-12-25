@@ -3,22 +3,12 @@ package com.example.course_project;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import java.io.IOException;
 
 public class BoardJournalActivity extends Activity implements OnClickListener {
 
@@ -58,31 +48,27 @@ public class BoardJournalActivity extends Activity implements OnClickListener {
     }
 
     void ViewMaintenance() {     //отображжение активити(прогрессбар и значения)
-
-        Cursor cur = workWithDBBoardJur.getAccessToDB().query("maintenance", null, null, null, null, null, null);//создаем таблицу в БД
-
-        cur.moveToPosition(workWithDBBoardJur.getCursorMaintenance()-1);
-        
-            // определяем номера столбцов по имени в выборке
-            int autoColIndex = cur.getColumnIndex("auto");
-            int modelColIndex = cur.getColumnIndex("model");
-            int yearOfIssueColIndex = cur.getColumnIndex("yearOfIssue");
-            int brakePadChangeColIndex = cur.getColumnIndex("brakePadChange");
-            int brakeDiscChangeColIndex = cur.getColumnIndex("brakeDiscChange");
-            int motorOilChangeColIndex = cur.getColumnIndex("motorOilChange");
+        /*создаем переменные и записываем значения с БД в них для отображения прогрессбар*/
+            int brakePadVal = Integer.valueOf(workWithDBBoardJur.getFieldOfDB("maintenance", "brakePadChange",
+                    workWithDBBoardJur.getCursorMaintenance())); //cur.getInt(brakePadChangeColIndex);
+            int brakeChangeVal = Integer.valueOf(workWithDBBoardJur.getFieldOfDB("maintenance", "brakeDiscChange",
+                    workWithDBBoardJur.getCursorMaintenance())); //cur.getInt(brakeDiscChangeColIndex);
+            int motorOilVal =  Integer.valueOf(workWithDBBoardJur.getFieldOfDB("maintenance", "motorOilChange",
+                    workWithDBBoardJur.getCursorMaintenance()));  //cur.getInt(motorOilChangeColIndex);
+            int odoVal = Integer.valueOf(workWithDBBoardJur.getFieldOfDB("mytable", "odoValue",
+                workWithDBBoardJur.getCursorPositionMytable()));
 
             /*Отображаем сколько осталось до работ с помощью прогрессбара*/
-            progressBar1.setMax(cur.getInt(brakePadChangeColIndex));//макс значение прогрессбар
-            progressBar1.setProgress(workWithDBBoardJur.odoValue % cur.getInt(brakePadChangeColIndex));//значение для отображения прогресс бар.
-            brakePadChange.setText(String.valueOf(cur.getInt(brakePadChangeColIndex) - progressBar1.getProgress()));
+            progressBar1.setMax(brakePadVal);//макс значение прогрессбар
+            progressBar1.setProgress(odoVal % brakePadVal);//значение для отображения прогресс бар.
+            brakePadChange.setText(String.valueOf(brakePadVal - progressBar1.getProgress()));
             
-            progressBar2.setMax(cur.getInt(brakeDiscChangeColIndex));
-            progressBar2.setProgress(workWithDBBoardJur.odoValue % cur.getInt(brakeDiscChangeColIndex));
-            motorOilChange.setText(String.valueOf(cur.getInt(brakeDiscChangeColIndex) - progressBar2.getProgress()));
+            progressBar2.setMax(brakeChangeVal);
+            progressBar2.setProgress(odoVal % brakeChangeVal);
+            motorOilChange.setText(String.valueOf(brakeChangeVal - progressBar2.getProgress()));
             
-            progressBar3.setMax(cur.getInt(motorOilChangeColIndex));
-            progressBar3.setProgress(workWithDBBoardJur.odoValue % cur.getInt(motorOilChangeColIndex));
-            brakeDiscChange.setText(String.valueOf(cur.getInt(motorOilChangeColIndex) - progressBar3.getProgress()));
-            cur.close();
+            progressBar3.setMax(motorOilVal);
+            progressBar3.setProgress(odoVal % motorOilVal);
+            brakeDiscChange.setText(String.valueOf(motorOilVal - progressBar3.getProgress()));
     }
 }

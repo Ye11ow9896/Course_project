@@ -9,56 +9,93 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/HelloText"
+            android:layout_marginTop="50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20dp"
+            android:textColor="@color/black"
             android:gravity="center"
-            android:text="Привет!" />
+            android:text="" />
 
-        <EditText
+        <TextView
             android:id="@+id/NumberCarText"
             android:layout_marginTop="50dp"
+            android:layout_marginLeft="30dp"
+            android:drawablePadding="10dp"
+            android:drawableLeft="@drawable/ic_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:textColor="@color/black"
+            android:textSize="20dp"
             android:inputType="textPersonName"
             android:hint="Поле отображения номера тачки" />
 
-        <EditText
+        <TextView
             android:id="@+id/OdoValueText"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:drawableLeft="@drawable/ic_speedometer"
+            android:drawablePadding="10dp"
+            android:textSize="20dp"
+            android:textColor="@color/black"
             android:inputType="textPersonName"
             android:hint="Пробег автомобиля" />
 
+        <TextView
+            android:id="@+id/Location"
+            android:layout_width="200dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:drawablePadding="10dp"
+            android:textColor="@color/black"
+            android:text=""
+            android:drawableLeft="@drawable/ic_path"
+            android:textSize="20dp" />
+
         <ToggleButton
-            android:id="@+id/BtnStartStop"
-            android:layout_marginTop="50dp"
-            android:layout_width="280dp"
-            android:layout_height="40dp"
+            android:id="@+id/toggle"
+            android:layout_width="118dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textOff="Старт"
-            android:textOn="Стоп"
-            android:checked="false" />
-
-
+            android:layout_marginTop="20dp"
+            android:onClick="onToggleClicked"
+            android:textOff="Выключено"
+            android:textOn="Включено"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/BtnAlert"
+            android:layout_width="220dp"
+            android:layout_height="60dp"
+            android:elevation="6dp"
+            android:stateListAnimator="@null"
+            android:translationZ="4dp"
+            android:layout_gravity="center"
             android:layout_marginTop="50dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:background="@drawable/inset"
             android:text="Обслуживание" />
+
         <Button
             android:id="@+id/btnSettings"
-            android:layout_marginTop="50dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="220dp"
+            android:layout_height="60dp"
+            android:elevation="6dp"
+            android:stateListAnimator="@null"
+            android:translationZ="4dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/inset"
             android:text="настройки профиля" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

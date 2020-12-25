@@ -26,8 +26,12 @@
             android:layout_marginTop="200dp"
             android:layout_marginEnd="70dp"
             android:ems="10"
-            android:textColorHint="#000000"
-            android:hint="номер авто" />
+            android:textColorHint="#006363"
+            android:hint="Логин" />
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/editTextTextPassword"
@@ -36,26 +40,32 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:ems="10"
-            android:hint="пароль"
-            android:textColorHint="#000000"
+            android:hint="Пароль"
+            android:textColorHint="#006363"
             android:inputType="textPassword" />
 
         <Button
             android:id="@+id/btnLoginProfile"
             android:layout_width="220dp"
             android:layout_height="60dp"
+            android:elevation="6dp"
+            android:stateListAnimator="@null"
+            android:translationZ="4dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:background="@color/btnColor"
-            android:text="Войти" />
+            android:background="@drawable/inset"
+            android:text="Вход" />
 
         <Button
             android:id="@+id/btnCreateProfile"
             android:layout_width="220dp"
             android:layout_height="60dp"
+            android:elevation="6dp"
+            android:stateListAnimator="@null"
+            android:translationZ="4dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:background="@color/btnColor"
-            android:text="Регистрация" />
+            android:background="@drawable/inset"
+            android:text="регистрация" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

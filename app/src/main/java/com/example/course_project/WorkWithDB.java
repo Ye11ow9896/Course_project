@@ -1,16 +1,13 @@
 package com.example.course_project;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 public class WorkWithDB extends DBHelper {
 
-    public static int idValueMytable, idValueMaintenace, odoValue;
-    private static String carModel, carMark;
+    private static int idValueMaintenace;
     private static int cursorPositionMytable;
     private DBHelper dbHelper;
 
@@ -20,17 +17,8 @@ public class WorkWithDB extends DBHelper {
     }
 
 /*------------------------------сеттеры-------------------------------------------*/
-    private void setDataOfCar(String carModel, String carMark) {
-        this.carModel = carModel;
-        this.carMark = carMark;
-    }
-
     public void setIdMaintenance(int idValueMaintenace) {//метод получения айди после регистрации и авторизации
         this.idValueMaintenace = idValueMaintenace;
-    }
-
-    public void setOdoValue(int odoValue) {
-        this.odoValue = odoValue;
     }
 
     public void setCursorMytable(String userName) {
@@ -62,13 +50,21 @@ public class WorkWithDB extends DBHelper {
         return cursorPositionMytable;
     }
 
+    public String getFieldOfDB (String nameOfTable, String columnName, int cursorPosition) {
+        Cursor cursor = getAccessToDB().query(nameOfTable, null, null, null, null, null, null);//создаем таблицу в БД
+        cursor.moveToPosition(cursorPosition);
+        int ColIndex = cursor.getColumnIndex(columnName);
+        String f = cursor.getString(ColIndex);
+        cursor.close();
+        return f;
+    }
     public int getCursorMaintenance(){
-        return idValueMaintenace;
+        return idValueMaintenace - 1;
     }
 
     //метод возвращает индекс столбца. Принимает в качестве аргументов название таблицы
     //и название столбца
-    public int getFieldOfDB(String tableName, String columnName) {
+    private int getFieldOfDBForClass(String tableName, String columnName) {
         Cursor cursor = getAccessToDB().query(tableName, null, null, null, null, null, null);//создаем таблицу в БД
         int colIndex = cursor.getColumnIndex(columnName);
         cursor.close();
@@ -86,13 +82,11 @@ public class WorkWithDB extends DBHelper {
         if (cur1.moveToFirst()) {
             do {
                 /*проверяем, есть ли такая модель и марка автомобиля в БД*/
-                String mark =cur1.getString(getFieldOfDB("maintenance", "mark"));
-                String model    = cur1.getString(getFieldOfDB("maintenance", "model"));
-                if (carMark.equals(cur1.getString(getFieldOfDB("maintenance", "mark")))
-                        && carModel.equals(cur1.getString(getFieldOfDB("maintenance", "model")))) {
+                if (carMark.equals(cur1.getString(getFieldOfDBForClass("maintenance", "mark")))
+                        && carModel.equals(cur1.getString(getFieldOfDBForClass("maintenance", "model")))) {
                     result = true;//когда нашлись данные.
-                    setIdMaintenance(cur1.getInt(getFieldOfDB("maintenance", "id")));//передаем значение айди таблици мэинтенс
-                    int c = cur1.getInt(getFieldOfDB("maintenance", "id"));
+                    setIdMaintenance(cur1.getInt(getFieldOfDBForClass("maintenance", "id")));//передаем значение айди таблици мэинтенс
+                    int c = cur1.getInt(getFieldOfDBForClass("maintenance", "id"));
                 }
                 // переход на следующую строку
                 // а если следующей нет (текущая - последняя), то false - выходим из цикла
@@ -114,10 +108,10 @@ public class WorkWithDB extends DBHelper {
                 do
                 {//проверяем есть ли введенные данные в нашей БД и прогоняем по все базе, пока не найдем совпадения
                     //если пароль и номер авто совпадают с данными из БД то переходим в активити профиля
-                    if (name.equals(cur.getString(getFieldOfDB("mytable", "carNumber"))) &&
-                            password.equals(cur.getString(getFieldOfDB("mytable", "password")))) {
+                    if (name.equals(cur.getString(getFieldOfDBForClass("mytable", "userName"))) &&
+                            password.equals(cur.getString(getFieldOfDBForClass("mytable", "password")))) {
                         coincidence = true;//когда нашлись данные.
-                        setCursorMytable(cur.getString(getFieldOfDB("mytable", "userName")));//запись курсора в класс
+                        setCursorMytable(cur.getString(getFieldOfDBForClass("mytable", "userName")));//запись курсора в класс
                         logs();
                         break;
                     }

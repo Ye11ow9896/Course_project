@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -55,23 +56,23 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
     @Override
     public void onClick(View v) {
-        String name = (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "name")));
-        String pass = (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "password")));
-        String carNumb = (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "carNumber")));
-        String odoVal = (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "odoValue")));
         switch (v.getId())
         {
             case R.id.name:
-               Dialog("userName", (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "userName"))));
+                Dialog("userName", workWithDBSA.getFieldOfDB("mytable", "userName",
+                        workWithDBSA.getCursorPositionMytable()));
                 break;
             case R.id.password:
-               Dialog("password", (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "password"))));
+               Dialog("password", workWithDBSA.getFieldOfDB("mytable", "password",
+                       workWithDBSA.getCursorPositionMytable()));
                 break;
             case R.id.carNumber:
-               Dialog("carNumber", (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "carNumber"))));
+               Dialog("carNumber", workWithDBSA.getFieldOfDB("mytable", "carNumber",
+                       workWithDBSA.getCursorPositionMytable()));
                 break;
             case R.id.odoValue:
-               Dialog("odoValue", (String.valueOf(workWithDBSA.getFieldOfDB("mytable", "odoValue"))));
+               Dialog("odoValue", workWithDBSA.getFieldOfDB("mytable", "odoValue",
+                       workWithDBSA.getCursorPositionMytable()));
                 break;
             case R.id.deleteProfile:
                DeleteRowTable();
@@ -117,6 +118,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
                                 workWithDBSA.getAccessToDB().update("mytable", cv, "ID = " + ID, null);
                                 logs();
                                 workWithDBSA.close();
+                                Toast.makeText(context, "Изменения сохранены", Toast.LENGTH_LONG).show();
                             }
                         })
                 .setNegativeButton("Отмена",
